@@ -15,7 +15,6 @@ public class TripBookingDbContext(DbContextOptions<TripBookingDbContext> options
         {
             entity.HasKey(x => x.Name);
             
-            // TODO: Move max length to constants
             entity.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(50);
