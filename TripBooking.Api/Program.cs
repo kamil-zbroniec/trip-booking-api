@@ -1,13 +1,3 @@
-// TODO: 
-    // - Authorize
-    // - Unit tests
-    // - Update or remove Swagger Description
-// - Deploy
-    // - Add Carter (optionally)
-// - Reorganize mappers
-    // - Remove unused classes
-    // - Add registration limit
-
 namespace TripBooking.Api;
 
 using Carter;
@@ -76,12 +66,9 @@ public class Program
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        
         app.MapCarter();
         app.UseHttpsRedirection();
         

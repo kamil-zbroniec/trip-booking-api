@@ -1,5 +1,6 @@
 namespace TripBooking.Api.Endpoints.Trips;
 
+using ErrorHandling;
 using Exceptions;
 using FluentValidation;
 using Hateoas;
@@ -95,7 +96,7 @@ public static class TripEndpoints
                 nameof(GetTrip),
                 new { name = succ.Name },
                 succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
-            Results.BadRequest);
+            err => Results.BadRequest(err.ToResponse()));
     }
 
     public static async Task<IResult> UpdateTrip(
@@ -119,7 +120,7 @@ public static class TripEndpoints
             succ => Results.Ok(succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
             err => err is TripNotFoundException
                 ? Results.NotFound()
-                : Results.BadRequest(err));
+                : Results.BadRequest(err.ToResponse()));
     }
 
     public static async Task<IResult> DeleteTrip(
