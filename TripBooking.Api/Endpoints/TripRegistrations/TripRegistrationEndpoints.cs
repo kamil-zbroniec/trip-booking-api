@@ -1,5 +1,6 @@
 namespace TripBooking.Api.Endpoints.TripRegistrations;
 
+using ErrorHandling;
 using Exceptions;
 using FluentValidation;
 using Hateoas;
@@ -58,7 +59,7 @@ public static class TripRegistrationEndpoints
                 succ.ToResponse(GenerateLinks(succ.TripName, succ.UserEmail, linkGenerator, httpContext))),
             err => err is TripNotFoundException
                 ? Results.NotFound()
-                : Results.BadRequest(err));
+                : Results.BadRequest(err.ToResponse()));
     }
     
     private static Link[] GenerateLinks(string name, string email, LinkGenerator linkGenerator, HttpContext httpContext)
