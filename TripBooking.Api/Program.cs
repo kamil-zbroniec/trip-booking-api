@@ -1,13 +1,3 @@
-// TODO: 
-    // - Authorize
-    // - Unit tests
-    // - Update or remove Swagger Description
-// - Deploy
-    // - Add Carter (optionally)
-// - Reorganize mappers
-    // - Remove unused classes
-    // - Add registration limit
-
 namespace TripBooking.Api;
 
 using Carter;
