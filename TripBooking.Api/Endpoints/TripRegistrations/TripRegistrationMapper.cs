@@ -1,18 +1,18 @@
 namespace TripBooking.Api.Endpoints.TripRegistrations;
 
-using Dtos;
+using ApplicationServices.Contracts;
 using Hateoas;
 using System.Collections.Generic;
 
 public static class TripRegistrationMapper
 {
-    public static CreateTripRegistrationDto ToDto(this CreateTripRegistrationRequest source) =>
+    public static CreateTripRegistration ToDto(this CreateTripRegistrationRequest source) =>
         new()
         {
             UserEmail = source.UserEmail
         };
     
-    public static TripRegistrationResponse ToResponse(this TripRegistrationDto source, IReadOnlyCollection<Link> links) =>
+    public static TripRegistrationResponse ToResponse(this TripRegistration source, IReadOnlyCollection<Link> links) =>
         new()
         {
             TripName = source.TripName,

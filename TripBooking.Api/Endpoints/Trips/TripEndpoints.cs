@@ -1,29 +1,32 @@
 namespace TripBooking.Api.Endpoints.Trips;
 
-using ErrorHandling;
-using Exceptions;
+using ApplicationServices.Errors;
+using ApplicationServices.Requests;
 using FluentValidation;
 using Hateoas;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Services.Trips;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TripRegistrations;
+using CreateTrip = TripBooking.ApplicationServices.Requests.CreateTripRequest;
+using UpdateTrip = TripBooking.ApplicationServices.Requests.UpdateTripRequest;
+
 
 public static class TripEndpoints
 {
     public static async Task<IResult> ListTrips(
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        var trips = await tripService.Get(cancellationToken);
+        var trips = await mediator.Send(new GetTripsRequest(), cancellationToken);
 
         var response = trips
             .Select(x => x.ToSlimResponse(GenerateLinks(x.Name, linkGenerator, httpContext)))
@@ -34,12 +37,12 @@ public static class TripEndpoints
     
     public static async Task<IResult> SearchByCountry(
         [FromQuery(Name = "country"), Required] string country,
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        var trips = await tripService.GetByCountry(country, cancellationToken);
+        var trips = await mediator.Send(new GetTripsByCountryRequest(country), cancellationToken);
         
         var response = trips
             .Select(x => x.ToSlimResponse(GenerateLinks(x.Name, linkGenerator, httpContext)))
@@ -50,12 +53,12 @@ public static class TripEndpoints
 
     public static async Task<IResult> GetTrip(
         [FromRoute, Required] string name,
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        var trip = await tripService.Get(name, cancellationToken);
+        var trip = await mediator.Send(new GetTripByNameRequest(name), cancellationToken);
 
         if (trip is null)
         {
@@ -77,7 +80,7 @@ public static class TripEndpoints
     
     public static async Task<IResult> CreateTrip(
         [FromBody, Required] CreateTripRequest request,
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] IValidator<CreateTripRequest> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
@@ -88,21 +91,21 @@ public static class TripEndpoints
         {
             return Results.BadRequest(validationResult.ToDictionary());
         }
-        
-        var result = await tripService.Create(request.ToDto(), cancellationToken);
+
+        var result = await mediator.Send(new CreateTrip(request.ToDto()), cancellationToken);
 
         return result.Match<IResult>(
             succ => Results.CreatedAtRoute(
                 nameof(GetTrip),
                 new { name = succ.Name },
                 succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
-            err => Results.BadRequest(err.ToResponse()));
+            err => Results.BadRequest(err.Message));
     }
 
     public static async Task<IResult> UpdateTrip(
         [FromRoute, Required] string name,
         [FromBody, Required] UpdateTripRequest request,
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] IValidator<UpdateTripRequest> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
@@ -113,24 +116,24 @@ public static class TripEndpoints
         {
             return Results.BadRequest(validationResult.ToDictionary());
         }
-
-        var result = await tripService.Update(name, request.ToDto(), cancellationToken);
-
+        
+        var result = await mediator.Send(new UpdateTrip(name, request.ToDto()), cancellationToken);
+        
         return result.Match<IResult>(
             succ => Results.Ok(succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
-            err => err is TripNotFoundException
+            err => err is TripNotFound
                 ? Results.NotFound()
-                : Results.BadRequest(err.ToResponse()));
+                : Results.BadRequest(err.Message));
     }
 
     public static async Task<IResult> DeleteTrip(
         [FromRoute, Required] string name,
-        [FromServices] ITripService tripService,
+        [FromServices] IMediator mediator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        await tripService.Delete(name, cancellationToken);
+        await mediator.Send(new DeleteTripRequest(name), cancellationToken);
 
         var response = new TripPostDeleteResponse
         {

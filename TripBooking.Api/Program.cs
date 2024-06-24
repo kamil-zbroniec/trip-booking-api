@@ -1,5 +1,6 @@
 namespace TripBooking.Api;
 
+using ApplicationServices;
 using Carter;
 using Domain.Repositories;
 using FluentValidation;
@@ -8,11 +9,8 @@ using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Middlewares;
-using Services.TripRegistrations;
-using Services.Trips;
 using System.Collections.Generic;
 
 public class Program
@@ -53,14 +51,18 @@ public class Program
 
         });
 
-        builder.Services.AddScoped<ITripService, TripService>();
-        builder.Services.AddScoped<ITripRegistrationService, TripRegistrationService>();
-
         builder.Services.AddScoped<ITripRepository, TripRepository>();
         builder.Services.AddScoped<ITripRegistrationRepository, TripRegistrationRepository>();
 
-        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+        builder.Services
+            .AddMediatR(x => x
+                .RegisterServicesFromAssemblyContaining<Program>()
+                .RegisterServicesFromAssemblyContaining<ApplicationServicesLocator>());
+        builder.Services
+            .AddValidatorsFromAssemblyContaining<Program>()
+            .AddValidatorsFromAssemblyContaining<ApplicationServicesLocator>();
         builder.Services.AddCarter();
+
 
         builder.Services.AddDbContext<TripBookingDbContext>(s => s.UseInMemoryDatabase("in-memory-db"));
 

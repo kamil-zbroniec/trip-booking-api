@@ -1,12 +1,12 @@
-namespace TripBooking.Api.Validators;
+namespace TripBooking.ApplicationServices.Validators;
 
+using Contracts;
 using Domain.Validations;
-using Endpoints.Trips;
 using FluentValidation;
 
-public class UpdateTripRequestValidator : AbstractValidator<UpdateTripRequest>
+public class UpdateTripValidator : AbstractValidator<UpdateTrip>
 {
-    public UpdateTripRequestValidator()
+    public UpdateTripValidator()
     { 
         RuleFor(trip => trip.Country).SetValidator(new CountryValidator());
         RuleFor(trip => trip.NumberOfSeats).SetValidator(new NumberOfSeatsValidator());

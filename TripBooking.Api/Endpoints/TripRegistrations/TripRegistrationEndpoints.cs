@@ -1,14 +1,14 @@
 namespace TripBooking.Api.Endpoints.TripRegistrations;
 
-using ErrorHandling;
-using Exceptions;
+using ApplicationServices.Errors;
+using ApplicationServices.Requests;
 using FluentValidation;
 using Hateoas;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Services.TripRegistrations;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,14 +19,14 @@ public static class TripRegistrationEndpoints
     public static async Task<IResult> GetTripRegistration(
         [FromRoute, Required] string name,
         [FromRoute, Required] string email,
-        [FromServices] ITripRegistrationService tripRegistrationService,
+        [FromServices] IMediator mediator,
         [FromServices] IValidator<CreateTripRegistrationRequest> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        var trip = await tripRegistrationService.Get(name, email, cancellationToken);
-
+        var trip = await mediator.Send(new GetTripRegistrationRequest(name, email), cancellationToken);
+        
         if (trip is null)
         {
             return Results.NotFound();
@@ -38,7 +38,7 @@ public static class TripRegistrationEndpoints
     public static async Task<IResult> CreateTripRegistration(
         [FromRoute, Required] string name,
         [FromBody, Required] CreateTripRegistrationRequest request,
-        [FromServices] ITripRegistrationService tripRegistrationService,
+        [FromServices] IMediator mediator,
         [FromServices] IValidator<CreateTripRegistrationRequest> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
@@ -50,16 +50,16 @@ public static class TripRegistrationEndpoints
             return Results.BadRequest(validationResult.ToDictionary());
         }
         
-        var result = await tripRegistrationService.Register(name, request.ToDto(), cancellationToken);
-
+        var result = await mediator.Send(new RegisterForTripRequest(name, request.ToDto()), cancellationToken);
+        
         return result.Match<IResult>(
             succ => Results.CreatedAtRoute(
                 nameof(GetTripRegistration),
                 new { name = succ.TripName, email = succ.UserEmail },
                 succ.ToResponse(GenerateLinks(succ.TripName, succ.UserEmail, linkGenerator, httpContext))),
-            err => err is TripNotFoundException
+            err => err is TripNotFound
                 ? Results.NotFound()
-                : Results.BadRequest(err.ToResponse()));
+                : Results.BadRequest(err.Message));
     }
     
     private static Link[] GenerateLinks(string name, string email, LinkGenerator linkGenerator, HttpContext httpContext)

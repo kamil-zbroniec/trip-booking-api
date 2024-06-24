@@ -10,6 +10,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripBooking.Domain", "TripB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripBooking.Infrastructure", "TripBooking.Infrastructure\TripBooking.Infrastructure.csproj", "{AC7A06BA-44BE-470F-B51A-29786F4D5630}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripBooking.Domain.Validations", "TripBooking.Domain.Validations\TripBooking.Domain.Validations.csproj", "{33BAEDA5-59C0-4496-8139-0FD52D8E60AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripBooking.ApplicationServices", "TripBooking.ApplicationServices\TripBooking.ApplicationServices.csproj", "{ED474519-0327-4337-8477-A3D9FDE898E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripBooking.ApplicationServices.UnitTests", "TripBooking.ApplicationServices.UnitTests\TripBooking.ApplicationServices.UnitTests.csproj", "{9403460C-5A89-498C-A082-3E7D8722F48A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +42,17 @@ Global
 		{AC7A06BA-44BE-470F-B51A-29786F4D5630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC7A06BA-44BE-470F-B51A-29786F4D5630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC7A06BA-44BE-470F-B51A-29786F4D5630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33BAEDA5-59C0-4496-8139-0FD52D8E60AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33BAEDA5-59C0-4496-8139-0FD52D8E60AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33BAEDA5-59C0-4496-8139-0FD52D8E60AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33BAEDA5-59C0-4496-8139-0FD52D8E60AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED474519-0327-4337-8477-A3D9FDE898E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED474519-0327-4337-8477-A3D9FDE898E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED474519-0327-4337-8477-A3D9FDE898E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED474519-0327-4337-8477-A3D9FDE898E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9403460C-5A89-498C-A082-3E7D8722F48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9403460C-5A89-498C-A082-3E7D8722F48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9403460C-5A89-498C-A082-3E7D8722F48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9403460C-5A89-498C-A082-3E7D8722F48A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
