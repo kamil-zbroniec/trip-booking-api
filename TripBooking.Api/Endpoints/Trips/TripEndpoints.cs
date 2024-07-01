@@ -94,12 +94,12 @@ public static class TripEndpoints
 
         var result = await mediator.Send(new CreateTrip(request.ToDto()), cancellationToken);
 
-        return result.Match<IResult>(
-            succ => Results.CreatedAtRoute(
+        return result.IsSuccess
+            ? Results.CreatedAtRoute(
                 nameof(GetTrip),
-                new { name = succ.Name },
-                succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
-            err => Results.BadRequest(err.Message));
+                new { name = result.Value.Name },
+                result.Value.ToResponse(GenerateLinks(result.Value.Name, linkGenerator, httpContext)))
+            : Results.BadRequest(result.Error.Description);
     }
 
     public static async Task<IResult> UpdateTrip(
@@ -119,11 +119,11 @@ public static class TripEndpoints
         
         var result = await mediator.Send(new UpdateTrip(name, request.ToDto()), cancellationToken);
         
-        return result.Match<IResult>(
-            succ => Results.Ok(succ.ToResponse(GenerateLinks(succ.Name, linkGenerator, httpContext))),
-            err => err is TripNotFound
+        return result.IsSuccess
+            ? Results.Ok(result.Value.ToResponse(GenerateLinks(result.Value.Name, linkGenerator, httpContext)))
+            : result.Error == DomainErrors.Trip.NotFound
                 ? Results.NotFound()
-                : Results.BadRequest(err.Message));
+                : Results.BadRequest(result.Error.Description);
     }
 
     public static async Task<IResult> DeleteTrip(

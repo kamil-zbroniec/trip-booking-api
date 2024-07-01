@@ -52,14 +52,14 @@ public static class TripRegistrationEndpoints
         
         var result = await mediator.Send(new RegisterForTripRequest(name, request.ToDto()), cancellationToken);
         
-        return result.Match<IResult>(
-            succ => Results.CreatedAtRoute(
+        return result.IsSuccess
+            ? Results.CreatedAtRoute(
                 nameof(GetTripRegistration),
-                new { name = succ.TripName, email = succ.UserEmail },
-                succ.ToResponse(GenerateLinks(succ.TripName, succ.UserEmail, linkGenerator, httpContext))),
-            err => err is TripNotFound
+                new { name = result.Value.TripName, email = result.Value.UserEmail },
+                result.Value.ToResponse(GenerateLinks(result.Value.TripName, result.Value.UserEmail, linkGenerator, httpContext)))
+            : result.Error == DomainErrors.Trip.NotFound
                 ? Results.NotFound()
-                : Results.BadRequest(err.Message));
+                : Results.BadRequest(result.Error.Description);
     }
     
     private static Link[] GenerateLinks(string name, string email, LinkGenerator linkGenerator, HttpContext httpContext)

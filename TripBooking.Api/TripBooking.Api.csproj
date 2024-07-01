@@ -34,8 +34,4 @@
       <ProjectReference Include="..\TripBooking.Infrastructure\TripBooking.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Exceptions\" />
-    </ItemGroup>
-
 </Project>

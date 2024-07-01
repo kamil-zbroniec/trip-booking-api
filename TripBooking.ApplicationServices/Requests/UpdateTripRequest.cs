@@ -5,13 +5,13 @@ using Domain.Repositories;
 using Errors;
 using FluentValidation;
 using MediatR;
-using OneOf;
+using Shared.Results;
 using System.Threading;
 using System.Threading.Tasks;
 
-public record UpdateTripRequest(string Name, UpdateTrip Model) : IRequest<OneOf<Trip, IOperationError>>;
+public record UpdateTripRequest(string Name, UpdateTrip Model) : IRequest<Result<Trip>>;
 
-public class UpdateTripRequestHandler : IRequestHandler<UpdateTripRequest, OneOf<Trip, IOperationError>>
+public class UpdateTripRequestHandler : IRequestHandler<UpdateTripRequest, Result<Trip>>
 {
     private readonly ITripRepository _tripRepository;
     private readonly IValidator<UpdateTrip> _updateTripValidator;
@@ -24,21 +24,21 @@ public class UpdateTripRequestHandler : IRequestHandler<UpdateTripRequest, OneOf
         _updateTripValidator = updateTripValidator;
     }
 
-    public async Task<OneOf<Trip, IOperationError>> Handle(UpdateTripRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Trip>> Handle(UpdateTripRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await _updateTripValidator.ValidateAsync(request.Model, cancellationToken);
 
         if (!validationResult.IsValid)
         {
             var validationException = new ValidationException(validationResult.Errors);
-            return new ValidationFailed(validationException.Message);
+            return Result<Trip>.Failed(DomainErrors.General.ValidationFailed(validationException.Message));
         }
 
         var trip = await _tripRepository.Get(request.Name, cancellationToken);
     
         if (trip is null)
         {
-            return new TripNotFound(request.Name);
+            return Result<Trip>.Failed(DomainErrors.Trip.NotFound);
         }
     
         trip.Country = request.Model.Country;

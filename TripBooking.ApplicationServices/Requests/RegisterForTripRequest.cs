@@ -3,16 +3,16 @@ namespace TripBooking.ApplicationServices.Requests;
 using Domain.Entities;
 using Domain.Repositories;
 using MediatR;
-using OneOf;
 using Contracts;
 using Errors;
 using FluentValidation;
+using Shared.Results;
 using System.Threading;
 using System.Threading.Tasks;
 
-public record RegisterForTripRequest(string Name, CreateTripRegistration Model) : IRequest<OneOf<TripRegistration, IOperationError>>;
+public record RegisterForTripRequest(string Name, CreateTripRegistration Model) : IRequest<Result<TripRegistration>>;
 
-public class RegisterForTripRequestHandler : IRequestHandler<RegisterForTripRequest, OneOf<TripRegistration, IOperationError>>
+public class RegisterForTripRequestHandler : IRequestHandler<RegisterForTripRequest, Result<TripRegistration>>
 {
     private readonly ITripRegistrationRepository _tripRegistrationRepository;
     private readonly ITripRepository _tripRepository;
@@ -28,30 +28,30 @@ public class RegisterForTripRequestHandler : IRequestHandler<RegisterForTripRequ
         _createTripRegistrationValidator = createTripRegistrationValidator;
     }
     
-    public async Task<OneOf<TripRegistration, IOperationError>> Handle(RegisterForTripRequest request, CancellationToken cancellationToken)
+    public async Task<Result<TripRegistration>> Handle(RegisterForTripRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await _createTripRegistrationValidator.ValidateAsync(request.Model, cancellationToken);
         if (!validationResult.IsValid)
         {
             var validationException = new ValidationException(validationResult.Errors);
-            return new ValidationFailed(validationException.Message); 
+            return Result<TripRegistration>.Failed(DomainErrors.General.ValidationFailed(validationException.Message)); 
         }
     
         var trip = await _tripRepository.Get(request.Name, cancellationToken);
         if (trip is null)
         {
-            return new TripNotFound(request.Name);
+            return Result<TripRegistration>.Failed(DomainErrors.Trip.NotFound);
         }
     
         var alreadyRegistered = await _tripRegistrationRepository.Exists(request.Name, request.Model.UserEmail, cancellationToken);
         if (alreadyRegistered)
         {
-            return new UserAlreadyRegisteredForTrip(request.Name, request.Model.UserEmail);
+            return Result<TripRegistration>.Failed(DomainErrors.TripRegistration.UserAlreadyRegistered);
         }
         
         if (trip.Registrations.Count >= trip.NumberOfSeats)
         {
-            return new TripRegistrationsCountExceeded(request.Name);            
+            return Result<TripRegistration>.Failed(DomainErrors.TripRegistration.CountExceeded);
         }
         
         var tripRegistration = new TripRegistrationEntity

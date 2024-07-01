@@ -42,7 +42,7 @@ public class RegisterForTripRequestHandlerTests
     
         // assert
         tripRegistrationRepository.Verify(x => x.Create(It.IsAny<TripRegistrationEntity>(), It.IsAny<CancellationToken>()), Times.Once);
-        result.AsT0.Should().BeOfType<TripRegistration>();
+        result.Value.Should().NotBeNull();
     }
     
     [Fact]
@@ -75,7 +75,7 @@ public class RegisterForTripRequestHandlerTests
     
         // assert
         tripRegistrationRepository.Verify(x => x.Create(It.IsAny<TripRegistrationEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<ValidationFailed>();
+        result.Error.Type.Should().Be(DomainErrors.General.ValidationFailedType);
     }
     
     [Fact]
@@ -108,7 +108,7 @@ public class RegisterForTripRequestHandlerTests
     
         // assert
         tripRegistrationRepository.Verify(x => x.Create(It.IsAny<TripRegistrationEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<TripNotFound>();
+        result.Error.Should().Be(DomainErrors.Trip.NotFound);
     }
     
     [Fact]
@@ -141,7 +141,7 @@ public class RegisterForTripRequestHandlerTests
 
         // assert
         tripRegistrationRepository.Verify(x => x.Create(It.IsAny<TripRegistrationEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<UserAlreadyRegisteredForTrip>();
+        result.Error.Should().Be(DomainErrors.TripRegistration.UserAlreadyRegistered);
     }
     
     [Fact]
@@ -179,6 +179,6 @@ public class RegisterForTripRequestHandlerTests
     
         // assert
         tripRegistrationRepository.Verify(x => x.Create(It.IsAny<TripRegistrationEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<TripRegistrationsCountExceeded>();
+        result.Error.Should().Be(DomainErrors.TripRegistration.CountExceeded);
     }
 }

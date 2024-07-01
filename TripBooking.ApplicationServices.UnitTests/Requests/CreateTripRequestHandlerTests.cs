@@ -37,7 +37,7 @@ public class CreateTripRequestHandlerTests
 
         // assert
         repository.Verify(x => x.Create(It.IsAny<TripEntity>(), It.IsAny<CancellationToken>()), Times.Once);
-        result.AsT0.Should().BeOfType<Trip>();
+        result.Value.Should().NotBeNull();
     }
     
     [Fact]
@@ -65,7 +65,7 @@ public class CreateTripRequestHandlerTests
 
         // assert
         repository.Verify(x => x.Create(It.IsAny<TripEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<ValidationFailed>();
+        result.Error.Type.Should().Be(DomainErrors.General.ValidationFailedType);
     }
     
     [Fact]
@@ -93,6 +93,6 @@ public class CreateTripRequestHandlerTests
 
         // assert
         repository.Verify(x => x.Create(It.IsAny<TripEntity>(), It.IsAny<CancellationToken>()), Times.Never);
-        result.AsT1.Should().BeOfType<TripAlreadyExists>();
+        result.Error.Should().Be(DomainErrors.Trip.AlreadyExists);
     }
 }

@@ -6,13 +6,13 @@ using Domain.Repositories;
 using Errors;
 using FluentValidation;
 using MediatR;
-using OneOf;
+using Shared.Results;
 using System.Threading;
 using System.Threading.Tasks;
 
-public record CreateTripRequest(CreateTrip Model) : IRequest<OneOf<Trip, IOperationError>>;
+public record CreateTripRequest(CreateTrip Model) : IRequest<Result<Trip>>;
 
-public class CreateTripRequestHandler : IRequestHandler<CreateTripRequest, OneOf<Trip, IOperationError>>
+public class CreateTripRequestHandler : IRequestHandler<CreateTripRequest, Result<Trip>>
 {
     private readonly ITripRepository _tripRepository;
     private readonly IValidator<CreateTrip> _createTripValidator;
@@ -25,21 +25,21 @@ public class CreateTripRequestHandler : IRequestHandler<CreateTripRequest, OneOf
         _createTripValidator = createTripValidator;
     }
 
-    public async Task<OneOf<Trip, IOperationError>> Handle(CreateTripRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Trip>> Handle(CreateTripRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await _createTripValidator.ValidateAsync(request.Model, cancellationToken);
 
         if (!validationResult.IsValid)
         {
             var validationException = new ValidationException(validationResult.Errors);
-            return new ValidationFailed(validationException.Message);
+            return Result<Trip>.Failed(DomainErrors.General.ValidationFailed(validationException.Message));
         }
 
         var exists = await _tripRepository.Exists(request.Model.Name, cancellationToken);
         
         if (exists)
         {
-            return new TripAlreadyExists(request.Model.Name);
+            return Result<Trip>.Failed(DomainErrors.Trip.AlreadyExists);
         }
 
         var trip = new TripEntity
