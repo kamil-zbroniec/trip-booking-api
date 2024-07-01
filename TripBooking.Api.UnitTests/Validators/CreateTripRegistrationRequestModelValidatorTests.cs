@@ -4,9 +4,9 @@ using Endpoints.TripRegistrations;
 using FluentValidation.TestHelper;
 using TripBooking.Api.Validators;
 
-public class CreateTripRegistrationRequestValidatorTests
+public class CreateTripRegistrationRequestModelValidatorTests
 {
-    private readonly CreateTripRegistrationRequestValidator _sut = new();
+    private readonly CreateTripRegistrationRequestModelValidator _sut = new();
 
     [Theory]
     [InlineData("email@mail..com")]
@@ -14,7 +14,7 @@ public class CreateTripRegistrationRequestValidatorTests
     public async Task CreateTripRegistrationRequestValidator_WhenEmailIsInvalid_ShouldReturnError(string email)
     {
         // arrange
-        var model = new CreateTripRegistrationRequest
+        var model = new CreateTripRegistrationRequestModel
         {
             UserEmail = email
         };

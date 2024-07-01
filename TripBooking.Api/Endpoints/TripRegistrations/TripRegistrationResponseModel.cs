@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-public record TripRegistrationResponse
+public record TripRegistrationResponseModel
 {
     public string TripName { get; init; } = null!;
     

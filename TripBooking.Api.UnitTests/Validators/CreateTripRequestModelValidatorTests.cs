@@ -4,15 +4,15 @@ using Api.Validators;
 using Endpoints.Trips;
 using FluentValidation.TestHelper;
 
-public class CreateTripRequestValidatorTests
+public class CreateTripRequestModelValidatorTests
 {
-    private readonly CreateTripRequestValidator _sut = new();
+    private readonly CreateTripRequestModelValidator _sut = new();
 
     [Fact]
     public async Task CreateTripRequestValidator_WhenModelIsInvalid_ShouldReturnError()
     {
         // arrange
-        var model = new CreateTripRequest
+        var model = new CreateTripRequestModel
         {
             Name = string.Empty,
             Country = string.Empty,

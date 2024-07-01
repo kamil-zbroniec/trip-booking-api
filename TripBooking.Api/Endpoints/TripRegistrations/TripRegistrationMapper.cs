@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 public static class TripRegistrationMapper
 {
-    public static CreateTripRegistration ToDto(this CreateTripRegistrationRequest source) =>
+    public static CreateTripRegistration ToDto(this CreateTripRegistrationRequestModel source) =>
         new()
         {
             UserEmail = source.UserEmail
         };
     
-    public static TripRegistrationResponse ToResponse(this TripRegistration source, IReadOnlyCollection<Link> links) =>
+    public static TripRegistrationResponseModel ToResponse(this TripRegistration source, IReadOnlyCollection<Link> links) =>
         new()
         {
             TripName = source.TripName,

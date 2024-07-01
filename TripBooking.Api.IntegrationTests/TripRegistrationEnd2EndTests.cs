@@ -24,7 +24,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -35,7 +35,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
 
             _ = await client.PostAsJsonAsync("api/v1/trip", createTripRequest);
             
-            var createTripRegistrationRequest = new CreateTripRegistrationRequest
+            var createTripRegistrationRequest = new CreateTripRegistrationRequestModel
             {
                 UserEmail = "user@email.com"
             };
@@ -58,7 +58,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
         // arrange
         var client = GetHttpClient();
         
-        var createTripRegistrationRequest = new CreateTripRegistrationRequest
+        var createTripRegistrationRequest = new CreateTripRegistrationRequestModel
         {
             UserEmail = "user@email.com"
         };
@@ -78,7 +78,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -89,7 +89,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
 
             _ = await client.PostAsJsonAsync("api/v1/trip", createTripRequest);
             
-            var createTripRegistrationRequest = new CreateTripRegistrationRequest
+            var createTripRegistrationRequest = new CreateTripRegistrationRequestModel
             {
                 UserEmail = "user@mail"
             };
@@ -114,7 +114,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -125,7 +125,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
             
             _ = await client.PostAsJsonAsync("api/v1/trip", createTripRequest);
             
-            var createTripRegistrationRequest = new CreateTripRegistrationRequest
+            var createTripRegistrationRequest = new CreateTripRegistrationRequestModel
             {
                 UserEmail = "user@mail.com"
             };
@@ -152,7 +152,7 @@ public class TripRegistrationEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",

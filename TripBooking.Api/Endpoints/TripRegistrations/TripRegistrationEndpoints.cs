@@ -20,7 +20,7 @@ public static class TripRegistrationEndpoints
         [FromRoute, Required] string name,
         [FromRoute, Required] string email,
         [FromServices] IMediator mediator,
-        [FromServices] IValidator<CreateTripRegistrationRequest> validator,
+        [FromServices] IValidator<CreateTripRegistrationRequestModel> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
@@ -37,9 +37,9 @@ public static class TripRegistrationEndpoints
     
     public static async Task<IResult> CreateTripRegistration(
         [FromRoute, Required] string name,
-        [FromBody, Required] CreateTripRegistrationRequest request,
+        [FromBody, Required] CreateTripRegistrationRequestModel request,
         [FromServices] IMediator mediator,
-        [FromServices] IValidator<CreateTripRegistrationRequest> validator,
+        [FromServices] IValidator<CreateTripRegistrationRequestModel> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)

@@ -1,6 +1,6 @@
 namespace TripBooking.Api.Endpoints.TripRegistrations;
 
-public record CreateTripRegistrationRequest
+public record CreateTripRegistrationRequestModel
 {
     public string UserEmail { get; init; } = null!;
 }

@@ -14,9 +14,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TripRegistrations;
-using CreateTrip = TripBooking.ApplicationServices.Requests.CreateTripRequest;
-using UpdateTrip = TripBooking.ApplicationServices.Requests.UpdateTripRequest;
-
 
 public static class TripEndpoints
 {
@@ -65,7 +62,7 @@ public static class TripEndpoints
             return Results.NotFound();
         }
 
-        var response = new TripResponse
+        var response = new TripResponseModel
         {
             Name = trip.Name,
             Country = trip.Country,
@@ -79,9 +76,9 @@ public static class TripEndpoints
     }
     
     public static async Task<IResult> CreateTrip(
-        [FromBody, Required] CreateTripRequest request,
+        [FromBody, Required] CreateTripRequestModel request,
         [FromServices] IMediator mediator,
-        [FromServices] IValidator<CreateTripRequest> validator,
+        [FromServices] IValidator<CreateTripRequestModel> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
@@ -92,7 +89,7 @@ public static class TripEndpoints
             return Results.BadRequest(validationResult.ToDictionary());
         }
 
-        var result = await mediator.Send(new CreateTrip(request.ToDto()), cancellationToken);
+        var result = await mediator.Send(new CreateTripRequest(request.ToDto()), cancellationToken);
 
         return result.IsSuccess
             ? Results.CreatedAtRoute(
@@ -104,9 +101,9 @@ public static class TripEndpoints
 
     public static async Task<IResult> UpdateTrip(
         [FromRoute, Required] string name,
-        [FromBody, Required] UpdateTripRequest request,
+        [FromBody, Required] UpdateTripRequestModel request,
         [FromServices] IMediator mediator,
-        [FromServices] IValidator<UpdateTripRequest> validator,
+        [FromServices] IValidator<UpdateTripRequestModel> validator,
         [FromServices] LinkGenerator linkGenerator,
         HttpContext httpContext,
         CancellationToken cancellationToken)
@@ -117,7 +114,7 @@ public static class TripEndpoints
             return Results.BadRequest(validationResult.ToDictionary());
         }
         
-        var result = await mediator.Send(new UpdateTrip(name, request.ToDto()), cancellationToken);
+        var result = await mediator.Send(new UpdateTripRequest(name, request.ToDto()), cancellationToken);
         
         return result.IsSuccess
             ? Results.Ok(result.Value.ToResponse(GenerateLinks(result.Value.Name, linkGenerator, httpContext)))
@@ -135,7 +132,7 @@ public static class TripEndpoints
     {
         await mediator.Send(new DeleteTripRequest(name), cancellationToken);
 
-        var response = new TripPostDeleteResponse
+        var response = new TripPostDeleteResponseModel
         {
             Links = GeneratePostDeleteLinks(linkGenerator, httpContext)
         };

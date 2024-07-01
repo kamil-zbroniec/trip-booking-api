@@ -1,3 +1,2 @@
 1. Implement FastEndpoints
-2. Consider using self-written results class instead of OneOf<T> (move IOperationError interface to the new project)
-3. 
+2. 

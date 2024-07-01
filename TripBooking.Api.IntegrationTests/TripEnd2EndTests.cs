@@ -24,7 +24,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -58,7 +58,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         // arrange
         var client = GetHttpClient();
 
-        var createTripRequest = new CreateTripRequest
+        var createTripRequest = new CreateTripRequestModel
         {
             Name = name,
             Country = country,
@@ -82,7 +82,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -93,7 +93,7 @@ public class TripEnd2EndTests : End2EndTestsBase
 
             _ = await client.PostAsJsonAsync("api/v1/trip", createTripRequest);
         
-            var updateTripRequest = new UpdateTripRequest()
+            var updateTripRequest = new UpdateTripRequestModel()
             {
                 Country = "new_country",
                 Description = "new_description",
@@ -119,7 +119,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         // arrange
         var client = GetHttpClient();
 
-        var updateTripRequest = new UpdateTripRequest()
+        var updateTripRequest = new UpdateTripRequestModel()
         {
             Country = "new_country",
             Description = "new_description",
@@ -145,7 +145,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -154,7 +154,7 @@ public class TripEnd2EndTests : End2EndTestsBase
                 NumberOfSeats = 5
             };
         
-            var updateTripRequest = new UpdateTripRequest()
+            var updateTripRequest = new UpdateTripRequestModel()
             {
                 Country = country,
                 Description = "valid_description",
@@ -180,7 +180,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         // arrange
         var client = GetHttpClient();
         
-        var createTripRequest = new CreateTripRequest
+        var createTripRequest = new CreateTripRequestModel
         {
             Name = "valid_name",
             Country = "valid_country",
@@ -219,7 +219,7 @@ public class TripEnd2EndTests : End2EndTestsBase
         try
         {
             // arrange
-            var createTripRequest = new CreateTripRequest
+            var createTripRequest = new CreateTripRequestModel
             {
                 Name = "valid_name",
                 Country = "valid_country",
@@ -265,7 +265,7 @@ public class TripEnd2EndTests : End2EndTestsBase
             // arrange
             for (int i = 0; i < 3; i++)
             {
-                var createTripRequest = new CreateTripRequest
+                var createTripRequest = new CreateTripRequestModel
                 {
                     Name = $"valid_name_{i}",
                     Country = "valid_country",
@@ -278,7 +278,7 @@ public class TripEnd2EndTests : End2EndTestsBase
             }
         
             // act
-            var trips = await client.GetFromJsonAsync<IReadOnlyCollection<TripResponse>>("api/v1/trip/list");
+            var trips = await client.GetFromJsonAsync<IReadOnlyCollection<TripResponseModel>>("api/v1/trip/list");
         
             // assert
             trips.Count.Should().Be(3);
@@ -302,7 +302,7 @@ public class TripEnd2EndTests : End2EndTestsBase
             // arrange
             for (int i = 0; i < 3; i++)
             {
-                var createTripRequest = new CreateTripRequest
+                var createTripRequest = new CreateTripRequestModel
                 {
                     Name = $"valid_name_{i}",
                     Country = $"valid_country_{i % 2}",
@@ -315,7 +315,7 @@ public class TripEnd2EndTests : End2EndTestsBase
             }
         
             // act
-            var trips = await client.GetFromJsonAsync<IReadOnlyCollection<TripResponse>>("api/v1/trip/search?country=valid_country_0");
+            var trips = await client.GetFromJsonAsync<IReadOnlyCollection<TripResponseModel>>("api/v1/trip/search?country=valid_country_0");
         
             // assert
             trips.Count.Should().Be(2);

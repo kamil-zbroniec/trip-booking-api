@@ -2,7 +2,7 @@ namespace TripBooking.Api.Endpoints.Trips;
 
 using System;
 
-public record UpdateTripRequest
+public record UpdateTripRequestModel
 {
     public string Country { get; init; } = null!;
 

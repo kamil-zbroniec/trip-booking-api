@@ -17,13 +17,13 @@ public class TripRegistrationEndpointsModule : ICarterModule
         group.MapGet("{email}", TripRegistrationEndpoints.GetTripRegistration)
             .WithName(nameof(TripRegistrationEndpoints.GetTripRegistration))
             .WithMetadata(new SwaggerOperationAttribute { Summary = "Get trip registration by trip name and user email" })
-            .Produces<TripRegistrationResponse>()
+            .Produces<TripRegistrationResponseModel>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("", TripRegistrationEndpoints.CreateTripRegistration)
             .WithName(nameof(TripRegistrationEndpoints.CreateTripRegistration))
             .WithMetadata(new SwaggerOperationAttribute { Summary = "Create registration for a trip" })
-            .Produces<TripRegistrationResponse>(StatusCodes.Status201Created)
+            .Produces<TripRegistrationResponseModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest);
     }
 }

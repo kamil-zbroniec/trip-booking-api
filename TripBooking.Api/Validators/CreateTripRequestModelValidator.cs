@@ -4,10 +4,11 @@ using Domain.Validations;
 using Endpoints.Trips;
 using FluentValidation;
 
-public class UpdateTripRequestValidator : AbstractValidator<UpdateTripRequest>
+public class CreateTripRequestModelValidator : AbstractValidator<CreateTripRequestModel>
 {
-    public UpdateTripRequestValidator()
-    { 
+    public CreateTripRequestModelValidator()
+    {
+        RuleFor(trip => trip.Name).SetValidator(new NameValidator());
         RuleFor(trip => trip.Country).SetValidator(new CountryValidator());
         RuleFor(trip => trip.NumberOfSeats).SetValidator(new NumberOfSeatsValidator());
     }

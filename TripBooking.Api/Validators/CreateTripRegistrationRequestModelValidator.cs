@@ -4,9 +4,9 @@ using Endpoints.TripRegistrations;
 using FluentValidation;
 using FluentValidation.Validators;
 
-public class CreateTripRegistrationRequestValidator : AbstractValidator<CreateTripRegistrationRequest>
+public class CreateTripRegistrationRequestModelValidator : AbstractValidator<CreateTripRegistrationRequestModel>
 {
-    public CreateTripRegistrationRequestValidator()
+    public CreateTripRegistrationRequestModelValidator()
     {
         RuleFor(tripRegistration => tripRegistration.UserEmail).EmailAddress(EmailValidationMode.Net4xRegex);
     }

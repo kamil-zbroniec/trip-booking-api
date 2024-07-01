@@ -2,7 +2,7 @@ namespace TripBooking.Api.Endpoints.Trips;
 
 using System;
 
-public record CreateTripRequest
+public record CreateTripRequestModel
 {
     public string Name { get; init; } = null!;
 
